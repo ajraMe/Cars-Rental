@@ -5,7 +5,8 @@ export const getCarsList = async () => {
     const query = gql`
       query CarLists {
           carLists {
-            carAvg
+            engine
+            liters
             createdAt
             id
             name

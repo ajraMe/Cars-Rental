@@ -37,12 +37,12 @@ const Row = ({title, subtitle, img, imgSize, reversed}) => {
                          flexDirection: "row-reverse",
                          justifyContent: "flex-end",
                          gap: 30
-                     } : {}}>
-                    <div className="text-center xl:text-left order-2 xl:order-none">
+                     } : {gap: 30}}>
+                    <div className="text-center xl:text-left order-2 xl:order-none about-us__item-text">
                         <h2 className="h2 mb6">{title}</h2>
-                        <p className="text-xl">
+                        <div className="text-xl">
                             {subtitle}
-                        </p>
+                        </div>
                     </div>
                     {/* text*/}
                     <div className="order-1 xl:order-none mb-8 xl:mb-0">

@@ -24,6 +24,16 @@ main {
     flex: 1 1 auto;
 }
 
+.about-us__item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-us__item {
+    list-style-type: disc;
+}
+
 #combo-box-demo {
     height: 35px;
 }

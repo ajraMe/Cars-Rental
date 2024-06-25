@@ -1,16 +1,16 @@
 import React from 'react'
 import Link from "next/link";
-import {FaTwitter, FaFacebook, FaYoutube, FaInstagram,FaTelegram} from "react-icons/fa";
+import {FaTwitter, FaFacebook, FaYoutube, FaInstagram, FaTelegram} from "react-icons/fa";
 
 const socials = [
-    {icon: <FaTwitter />, path: ""},
-    {icon: <FaFacebook />, path: ""},
-    {icon: <FaYoutube />, path: ""},
-    {icon: <FaInstagram />, path: ""},
-    {icon: <FaTelegram />, path: ""},
+    {icon: <FaTwitter/>, path: ""},
+    {icon: <FaFacebook/>, path: ""},
+    {icon: <FaYoutube/>, path: ""},
+    {icon: <FaInstagram/>, path: "https://www.instagram.com/ahmedajrame/"},
+    {icon: <FaTelegram/>, path: ""},
 ]
 
-const Social = ({ containerStyles, iconStyles }) => {
+const Social = ({containerStyles, iconStyles}) => {
     return (
         <div className={containerStyles}>
             {socials.map((item, index) => {

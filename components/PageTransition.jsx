@@ -11,9 +11,10 @@ const PageTransition = ({children}) => {
                 <motion.div
                     initial={{opacity: 1}}
                     animate={{
-                        opacity: 0,
+                        opacity:
+                            0,
                         transition: {
-                            delay: 1,
+                            delay: 0.5,
                             duration: 0.3, ease: "easeOut"
                         },
                     }}

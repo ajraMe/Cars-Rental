@@ -2,12 +2,14 @@ import {BookCreatedFlagContext} from "@/context/BookCreatedFlagContext";
 import {createBooking, getCarLocation, getStoreLocations} from "@/services";
 import React, {useContext, useEffect, useState} from "react";
 import toast from "react-hot-toast";
+import {useClerk} from "@clerk/clerk-react";
 
 function Form({car, locations}: any) {
     const [storeLocation, setStoreLocation] = useState<any>([]);
     const {showToastMsg, setShowToastMsg} = useContext(BookCreatedFlagContext);
+    const clerk: any = useClerk();
     const [formValue, setFormValue] = useState({
-        userName: 'ahmed',
+        userName: "", // Initialize with an empty string
         location: '',
         pickUpDate: '',
         dropOffDate: '',
@@ -19,15 +21,22 @@ function Form({car, locations}: any) {
     const today: any = new Date().toISOString().split('T')[0];
 
     useEffect(() => {
+        if (clerk.user) { // Ensure clerk.user is available
+            setFormValue(prevFormValue => ({
+                ...prevFormValue,
+                userName: clerk.user.username // Set username once user is available
+            }));
+        }
+
         if (car) {
             console.log(car?.id, "****************************");
-            setFormValue((prevFormValue) => ({
+            setFormValue(prevFormValue => ({
                 ...prevFormValue,
                 carId: car.id
             }));
             getStoreLocation_(car.id);
         }
-    }, [car]);
+    }, [car, clerk.user]);
 
     const getStoreLocation_ = async (id: any) => {
         console.log(id);
@@ -39,19 +48,24 @@ function Form({car, locations}: any) {
     const handleChange = (event: any) => {
         const {name, value} = event.target;
 
-        setFormValue((prevFormValue) => {
-            const updatedFormValue = {...prevFormValue, [name]: value};
+        setFormValue(prevFormValue => ({
+            ...prevFormValue,
+            [name]: value
+        }));
 
-            if (name === 'pickUpDate' && updatedFormValue.dropOffDate && new Date(updatedFormValue.dropOffDate) < new Date(value)) {
-                updatedFormValue.dropOffDate = value;
-            }
+        if (name === 'pickUpDate' && formValue.dropOffDate && new Date(formValue.dropOffDate) < new Date(value)) {
+            setFormValue(prevFormValue => ({
+                ...prevFormValue,
+                dropOffDate: value
+            }));
+        }
 
-            if (name === 'pickUpTime' && updatedFormValue.dropOffTime && new Date(`1970-01-01T${updatedFormValue.dropOffTime}:00`) < new Date(`1970-01-01T${value}:00`)) {
-                updatedFormValue.dropOffTime = value;
-            }
-
-            return updatedFormValue;
-        });
+        if (name === 'pickUpTime' && formValue.dropOffTime && new Date(`1970-01-01T${formValue.dropOffTime}:00`) < new Date(`1970-01-01T${value}:00`)) {
+            setFormValue(prevFormValue => ({
+                ...prevFormValue,
+                dropOffTime: value
+            }));
+        }
     };
 
     const handleSubmit = async () => {
@@ -69,6 +83,7 @@ function Form({car, locations}: any) {
                 <label className="text-white">PickUp Location</label>
                 <select className="select select-bordered w-full max-w-lg text-white"
                         name="location"
+                        value={formValue.location}
                         onChange={handleChange}
                 >
                     <option value="PickUp" style={{color: 'gray'}}>PickUp Location?</option>
@@ -83,7 +98,7 @@ function Form({car, locations}: any) {
                     <input
                         type="date"
                         min={today}
-                        value={formValue.pickUpDate} // Controlled input
+                        value={formValue.pickUpDate}
                         onChange={handleChange}
                         name="pickUpDate"
                         className="input input-bordered w-full max-w-lg"
@@ -93,8 +108,8 @@ function Form({car, locations}: any) {
                     <label className="text-white">Drop Off Date</label>
                     <input
                         type="date"
-                        min={formValue.pickUpDate || today} // Dynamic minimum date
-                        value={formValue.dropOffDate} // Controlled input
+                        min={formValue.pickUpDate || today}
+                        value={formValue.dropOffDate}
                         onChange={handleChange}
                         name="dropOffDate"
                         className="input input-bordered w-full max-w-lg"
@@ -106,7 +121,7 @@ function Form({car, locations}: any) {
                     <label className="text-white">Pick Up Time</label>
                     <input
                         type="time"
-                        value={formValue.pickUpTime} // Controlled input
+                        value={formValue.pickUpTime}
                         onChange={handleChange}
                         name="pickUpTime"
                         className="input input-bordered w-full max-w-lg"
@@ -116,7 +131,7 @@ function Form({car, locations}: any) {
                     <label className="text-white">Drop Off Time</label>
                     <input
                         type="time"
-                        value={formValue.dropOffTime} // Controlled input
+                        value={formValue.dropOffTime}
                         onChange={handleChange}
                         name="dropOffTime"
                         className="input input-bordered w-full max-w-lg"
@@ -154,7 +169,7 @@ function Form({car, locations}: any) {
                     className="btn bg-red-500 text-white hover:bg-red-800"
                     onClick={handleSubmit}
                 >
-                    Save
+                    Confirm
                 </button>
             </div>
         </div>
